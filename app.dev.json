@@ -1,0 +1,12 @@
+{
+  "apps": [
+    {
+      "name": "dev.dnfts.api",
+      "script": "node dist/main.js",
+      "namespace": "dnfts.api",
+      "env": {
+        "PORT": 3000
+      }
+    }
+  ]
+}
