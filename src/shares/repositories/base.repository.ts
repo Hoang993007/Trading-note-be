@@ -1,6 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 
+import { DEFAULT_LIMIT, DEFAULT_PAGE } from '@/app/shares/constants';
+import { IPagination } from '@/app/shares/shared.interface';
 import {
   AggregatePaginateModel,
   AggregatePaginateResult,
@@ -15,8 +17,6 @@ import {
   UpdateQuery,
   UpdateWithAggregationPipeline,
 } from 'mongoose';
-import { DEFAULT_LIMIT, DEFAULT_PAGE } from 'src/shares/constants';
-import { IPagination } from '../shared.interface';
 
 export abstract class BaseRepository<T> {
   public model: Model<T & Document>;
@@ -140,7 +140,6 @@ export abstract class BaseRepository<T> {
     pipeline: PipelineStage[],
     options?: PaginateOptions,
   ): Promise<AggregatePaginateResult<any>> {
-    console.log(this.modelAggregatePaginate);
     return await this.modelAggregatePaginate.aggregatePaginate(
       pipeline,
       options,

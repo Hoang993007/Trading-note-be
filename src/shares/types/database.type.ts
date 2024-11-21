@@ -13,6 +13,7 @@ export enum EDatabasePropertyType {
   AUDIO = 'audio',
   LINK = 'link',
   EMAIL = 'email',
+  BOOLEAN = 'boolean',
 }
 
 export type TDatabasePropertySettingsOption = {
@@ -23,11 +24,13 @@ export type TDatabasePropertySettingsOption = {
 };
 
 export type TDatabasePropertySettings = {
+  width: number;
   options?: TDatabasePropertySettingsOption[];
   dateFormat?: string;
   timeFormat?: string;
   timeZone?: string;
   numberFormat?: string;
+  hidden?: boolean;
 };
 
 export type TDatabaseProperty = {
@@ -35,6 +38,7 @@ export type TDatabaseProperty = {
   name: string;
   type: EDatabasePropertyType;
   settings: TDatabasePropertySettings;
+  isDeleted?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -49,19 +53,31 @@ export type TDatabase = {
   name: string;
   properties: TDatabaseProperty[];
   sortBy: TDatabaseSortBy[];
+  isDeleted?: boolean;
   createdAt: Date;
   updatedAt: Date;
 };
 
+export type TDatabaseDataValueValue =
+  | string
+  | number
+  | boolean
+  | string[]
+  | number[]
+  | boolean[]
+  | null
+  | undefined;
+
 export type TDatabaseDataValue = {
   propertyId: string;
-  value: any;
-}
+  value: TDatabaseDataValueValue;
+};
 
 export type TDatabaseData = {
   id: string;
   databaseId: string;
   values: TDatabaseDataValue[];
+  isDeleted?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 };

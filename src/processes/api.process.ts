@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 import {
   INestApplication,
@@ -10,9 +10,9 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as httpContext from 'express-http-context';
 import * as fs from 'fs';
-import { AppModule } from './app.module';
-import { AllExceptionsFilter } from './shares/filters';
-import { LoggerService } from './shares/utils/utils-logger';
+import { AppModule } from 'src/app.module';
+import { AllExceptionsFilter } from 'src/shares/filters';
+import { LoggerService } from 'src/shares/utils/utils-logger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

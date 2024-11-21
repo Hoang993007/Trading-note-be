@@ -28,6 +28,9 @@ export class DatabaseData implements TDatabaseData {
   @Prop({ type: [Object], default: [] })
   values: TDatabaseDataValue[];
 
+  @Prop({ default: false })
+  isDeleted?: boolean;
+
   createdAt?: Date;
   updatedAt?: Date;
 }

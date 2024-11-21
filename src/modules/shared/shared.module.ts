@@ -6,6 +6,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import config from 'src/config';
 import { FileUploadModule } from 'src/modules/file-upload/file-upload.module';
+import { SharedController } from './shared.controller';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { FileUploadModule } from 'src/modules/file-upload/file-upload.module';
     }),
     FileUploadModule,
   ],
+  controllers: [SharedController],
   providers: [],
   exports: [MongooseModule, ConfigModule, JwtModule, FileUploadModule],
 })

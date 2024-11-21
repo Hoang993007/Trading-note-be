@@ -8,24 +8,32 @@ import {
   Put,
 } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-// import { plainToClass } from 'class-transformer';
+import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { plainToClass, plainToInstance } from 'class-transformer';
 import { Connection } from 'mongoose';
 import { nanoid } from 'nanoid';
 import { Database, DatabaseData } from 'src/schemas';
-import { withTransaction } from 'src/shares/helpers/mongoose/transaction';
-// import { CreateDatabaseReqDto } from './dtos/request.dto';
-// import { CreateDatabaseResDto } from './dtos/response.dto';
-// import { tradingNoteDatabase } from './seedData/trading-note-database.seed';
-import { plainToClass, plainToInstance } from 'class-transformer';
 import { NANOID_LENGTH } from 'src/shares/constants';
 import { Pagination } from 'src/shares/decorators/api-pagination.decorator';
+import { withTransaction } from 'src/shares/helpers/mongoose/transaction';
 import { IPagination } from 'src/shares/shared.interface';
-import { TDatabaseDataValue } from 'src/shares/types/database.type';
-import { AddNewRowBodyDto } from './dtos/request.dto';
+import {
+  TDatabaseDataValue,
+  TDatabasePropertySettings,
+} from 'src/shares/types/database.type';
+import {
+  AddNewPropertyBodyDto,
+  AddNewRowBodyDto,
+  CreateDatabaseReqDto,
+  UpdatePropertyBodyDto,
+} from './dtos/request.dto';
+import {
+  CreateDatabaseResDto,
+  ListDatabaseDataResponseDto,
+} from './dtos/response.dto';
+import { tradingNoteDatabase } from './seedData/trading-note-database.seed';
 import { DatabaseService } from './services';
 import { DatabaseDataService } from './services/database-data.service';
-import { ListDatabaseDataResponseDto } from './dtos/response.dto';
 @ApiTags('Databases')
 @Controller('databases')
 export class DatabaseController {
@@ -35,27 +43,27 @@ export class DatabaseController {
     @InjectConnection() private readonly connection: Connection,
   ) {}
 
-  // @Post()
-  // @ApiOperation({
-  //   operationId: 'createDatabase',
-  //   summary: 'Create Database',
-  //   description: 'Create Database',
-  // })
-  // @ApiBody({
-  //   type: CreateDatabaseReqDto,
-  //   examples: {
-  //     default: {
-  //       value: tradingNoteDatabase,
-  //     },
-  //   },
-  // })
-  // @ApiOkResponse({ description: 'Successful', type: CreateDatabaseResDto })
-  // async create(@Body() reqBody: CreateDatabaseReqDto) {
-  //   return await withTransaction(this.connection, async (session) => {
-  //     const res = await this.databaseService.create(reqBody, session);
-  //     return plainToClass(CreateDatabaseResDto, res);
-  //   });
-  // }
+  @Post()
+  @ApiOperation({
+    operationId: 'createDatabase',
+    summary: 'Create Database',
+    description: 'Create Database',
+  })
+  @ApiBody({
+    type: CreateDatabaseReqDto,
+    examples: {
+      default: {
+        value: tradingNoteDatabase,
+      },
+    },
+  })
+  @ApiOkResponse({ description: 'Successful', type: CreateDatabaseResDto })
+  async create(@Body() reqBody: CreateDatabaseReqDto) {
+    return await withTransaction(this.connection, async (session) => {
+      const res = await this.databaseService.create(reqBody, session);
+      return plainToClass(CreateDatabaseResDto, res);
+    });
+  }
 
   @Get('generate_id_multiple')
   @ApiOperation({
@@ -80,6 +88,30 @@ export class DatabaseController {
       await this.databaseService.seedOrUpdateDatabase(session);
     });
   }
+
+  @Put('update_seed')
+  @ApiOperation({
+    operationId: 'updateSeedTradingNoteDatabase',
+    summary: 'Update Trading Note Database Seed',
+    description: 'Update the existing Trading Note Database with new seed data',
+  })
+  @ApiOkResponse({ description: 'Successful' })
+  async updateSeedTradingNoteDatabase() {
+    return await this.databaseService.updateSeedDatabase();
+  }
+
+  // @Post('update_all_data')
+  // @ApiOperation({
+  //   operationId: 'updateAllData',
+  //   summary: 'Update All Data',
+  //   description: 'Update All Data',
+  // })
+  // @ApiOkResponse({ description: 'Successful' })
+  // async updateAllData() {
+  //   await withTransaction(this.connection, async (session) => {
+  //     await this.databaseDataService.updateAllData(session);
+  //   });
+  // }
 
   @Get('')
   @ApiOperation({
@@ -112,6 +144,82 @@ export class DatabaseController {
   @ApiOkResponse({ description: 'Successful', type: Database })
   async getDatabaseById(@Param('id') id: string) {
     return plainToClass(Database, await this.databaseService.getById(id));
+  }
+
+  @Post(':id/property')
+  @ApiOperation({
+    operationId: 'addNewProperty',
+    summary: 'Add New Property',
+    description: 'Add New Property',
+  })
+  @ApiOkResponse({ description: 'Successful', type: Database })
+  async addNewProperty(
+    @Param('id') id: string,
+    @Body() body: AddNewPropertyBodyDto,
+  ) {
+    return await withTransaction(this.connection, async (session) => {
+      return await this.databaseService.addNewProperty(id, body, session);
+    });
+  }
+
+  @Put(':id/property/:propertyId')
+  @ApiOperation({
+    operationId: 'updateProperty',
+    summary: 'Update Property',
+    description: 'Update Property',
+  })
+  @ApiOkResponse({ description: 'Successful', type: Database })
+  async updateProperty(
+    @Param('id') id: string,
+    @Param('propertyId') propertyId: string,
+    @Body() body: UpdatePropertyBodyDto,
+  ) {
+    return await withTransaction(this.connection, async (session) => {
+      return await this.databaseService.updateProperty(
+        id,
+        propertyId,
+        body,
+        session,
+      );
+    });
+  }
+
+  @Put(':id/property/:propertyId/settings')
+  @ApiOperation({
+    operationId: 'updatePropertySettings',
+    summary: 'Update Property Settings',
+    description: 'Update Property Settings',
+  })
+  @ApiOkResponse({ description: 'Successful', type: Database })
+  async updatePropertySettings(
+    @Param('id') id: string,
+    @Param('propertyId') propertyId: string,
+    @Body() body: TDatabasePropertySettings,
+  ) {
+    return await withTransaction(this.connection, async (session) => {
+      return await this.databaseService.updatePropertySettings(
+        id,
+        propertyId,
+        body,
+        session,
+      );
+    });
+  }
+
+  @Delete(':id/property/:propertyId')
+  @ApiOperation({
+    operationId: 'deleteProperty',
+    summary: 'Delete Property',
+    description: 'Delete Property',
+  })
+  @ApiOkResponse({ description: 'Successful', type: Database })
+  async deleteProperty(
+    @Param('id') id: string,
+    @Param('propertyId') propertyId: string,
+  ) {
+    return await withTransaction(this.connection, async (session) => {
+      return await this.databaseService.deleteProperty(id, propertyId, session);
+    });
   }
 
   @Get(':id/data')

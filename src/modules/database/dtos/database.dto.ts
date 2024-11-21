@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { IsArray, IsBoolean, IsEnum, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator';
 import {
   Database,
   DatabaseProperty,
@@ -46,12 +46,20 @@ export class DatabasePropertySettingsOptionDto
 @Exclude()
 export class DatabasePropertySettingsDto implements DatabasePropertySettings {
   @Expose()
+  @ApiProperty({
+    type: Number,
+    required: true,
+  })
+  width: number;
+
+  @Expose()
   @ApiPropertyOptional({
     type: [DatabasePropertySettingsOptionDto],
     required: false,
   })
   @IsArray()
-  options: DatabasePropertySettingsOptionDto[];
+  @IsOptional()
+  options?: DatabasePropertySettingsOptionDto[];
 
   @Expose()
   @ApiPropertyOptional({
@@ -59,7 +67,8 @@ export class DatabasePropertySettingsDto implements DatabasePropertySettings {
     required: false,
   })
   @IsString()
-  dateFormat: string;
+  @IsOptional()
+  dateFormat?: string;
 
   @Expose()
   @ApiPropertyOptional({
@@ -67,7 +76,8 @@ export class DatabasePropertySettingsDto implements DatabasePropertySettings {
     required: false,
   })
   @IsString()
-  timeFormat: string;
+  @IsOptional()
+  timeFormat?: string;
 
   @Expose()
   @ApiPropertyOptional({
@@ -75,7 +85,8 @@ export class DatabasePropertySettingsDto implements DatabasePropertySettings {
     required: false,
   })
   @IsString()
-  timeZone: string;
+  @IsOptional()
+  timeZone?: string;
 
   @Expose()
   @ApiPropertyOptional({
@@ -83,7 +94,8 @@ export class DatabasePropertySettingsDto implements DatabasePropertySettings {
     required: false,
   })
   @IsString()
-  numberFormat: string;
+  @IsOptional()
+  numberFormat?: string;
 
   @Expose()
   @ApiProperty({

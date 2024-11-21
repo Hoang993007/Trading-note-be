@@ -30,6 +30,9 @@ export class DatabasePropertySettingsOption
 
 @Schema({ _id: false, id: false, timestamps: false })
 export class DatabasePropertySettings implements TDatabasePropertySettings {
+  @Prop({ type: Number, default: 10 })
+  width: number;
+
   @Prop({ type: [DatabasePropertySettingsOption], default: [] })
   options?: DatabasePropertySettingsOption[];
 
@@ -57,11 +60,14 @@ export class DatabaseProperty implements TDatabaseProperty {
   @Prop({ type: String, required: true })
   name: string;
 
-  @Prop({ enum: EDatabasePropertyType, required: true })
+  @Prop({ type: String, enum: EDatabasePropertyType, required: true })
   type: EDatabasePropertyType;
 
   @Prop({ type: DatabasePropertySettings, required: true })
   settings: DatabasePropertySettings;
+
+  @Prop({ default: false })
+  isDeleted?: boolean;
 
   createdAt?: Date;
   updatedAt?: Date;

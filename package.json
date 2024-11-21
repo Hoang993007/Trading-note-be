@@ -6,9 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build && npm run hbs",
+    "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "hbs": "cp -r src/modules/shared/mail/templates dist/src/modules/shared/mail",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -22,8 +21,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@mysten/sui.js": "^0.51.0",
-    "@mysten/zklogin": "^0.6.1",
     "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/bull": "^10.1.1",
     "@nestjs/common": "^9.0.0",
@@ -49,7 +46,6 @@
     "fast-csv": "^5.0.1",
     "google-auth-library": "^9.11.0",
     "hbs": "^4.2.0",
-    "libphonenumber-js": "^1.11.3",
     "lint-staged": "^15.2.0",
     "lodash": "^4.17.21",
     "moment-timezone": "^0.5.45",

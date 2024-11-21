@@ -29,6 +29,6 @@ export class FileUploadService {
     // console.log(`[Delete  file] ${filename}`);
     const publicPath = this.configService.get<string>('app.publicPath');
     const filePath = path.join(publicPath, filename);
-    await fs.promises.unlink(filePath);
+    // await fs.promises.unlink(filePath); // TODO: revision later
   }
 }
